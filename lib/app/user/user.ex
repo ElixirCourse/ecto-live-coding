@@ -6,26 +6,43 @@ defmodule App.User do
 
   alias App.Repo
 
+  @derive {Inspect, except: [:email, :salt, :password]}
   schema "users" do
     field(:username, :string)
     field(:email, :string)
     field(:age, :integer)
+    field(:salt, :string)
+
+    field(:password_hash, :string)
+    field(:password, :string, virtual: true)
 
     has_many(:posts, App.Post)
   end
 
   def changeset(%__MODULE__{} = user, args \\ %{}) do
     user
-    |> cast(args, [:username, :email, :age])
+    |> cast(args, [:username, :email, :age, :password, :salt])
     |> validate_format(:email, ~r/@/)
+    |> validate_length(:password, min: 8)
+    |> put_pass_hash()
     |> validate_number(:age, greater_than_or_equal_to: 0)
     |> validate_required([:username])
     |> unique_constraint(:username)
   end
 
-  def add_user(username, email, age) do
+  defp put_pass_hash(%{changes: %{password: password, salt: salt}} = changeset) do
+    password_hash = :crypto.hash(:sha256, salt <> password) |> Base.encode64()
+    put_change(changeset, :password_hash, password_hash)
+  end
+
+  defp put_pass_hash(changeset), do: changeset
+
+  def add_user(args) do
+    salt = Map.get(args, :salt) || :crypto.strong_rand_bytes(16) |> Base.encode64()
+    args = Map.put(args, :salt, salt)
+
     %__MODULE__{}
-    |> changeset(%{username: username, email: email, age: age})
+    |> changeset(args)
     |> Repo.insert()
   end
 
