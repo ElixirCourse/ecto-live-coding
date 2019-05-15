@@ -7,8 +7,7 @@ defmodule App.Application do
 
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: App.Worker.start_link(arg)
-      # {App.Worker, arg}
+      App.Repo
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
