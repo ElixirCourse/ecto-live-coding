@@ -10,6 +10,8 @@ defmodule App.User do
     field(:username, :string)
     field(:email, :string)
     field(:age, :integer)
+
+    has_many(:posts, App.Post)
   end
 
   def changeset(%__MODULE__{} = user, args \\ %{}) do
