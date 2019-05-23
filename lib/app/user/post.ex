@@ -2,6 +2,8 @@ defmodule App.Post do
   use Ecto.Schema
 
   import Ecto.Changeset
+  import Ecto.Query
+
   alias App.Repo
 
   schema "posts" do
@@ -20,5 +22,10 @@ defmodule App.Post do
     %__MODULE__{}
     |> changeset(%{title: title, text: text, user_id: user_id})
     |> Repo.insert()
+  end
+
+  def posts_by_user(user_id) do
+    from(p in __MODULE__, where: p.user_id == ^user_id)
+    |> Repo.all()
   end
 end

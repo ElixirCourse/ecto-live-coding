@@ -5,7 +5,7 @@ defmodule App.MixProject do
     [
       app: :app,
       version: "0.1.0",
-      elixir: "~> 1.9-dev",
+      elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -25,7 +25,8 @@ defmodule App.MixProject do
   defp deps do
     [
       {:ecto_sql, "~> 3.0"},
-      {:postgrex, ">= 0.0.0"}
+      {:postgrex, ">= 0.0.0"},
+      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false}
     ]
   end
 

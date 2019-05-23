@@ -1,4 +1,5 @@
 defmodule App.User do
+  @derive {Inspect, except: [:email, :salt, :password]}
   use Ecto.Schema
 
   import Ecto.Changeset
@@ -6,7 +7,6 @@ defmodule App.User do
 
   alias App.Repo
 
-  @derive {Inspect, except: [:email, :salt, :password]}
   schema "users" do
     field(:username, :string)
     field(:email, :string)
